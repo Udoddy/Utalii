@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Dorm\DormCreate;
 use App\Http\Requests\Dorm\DormUpdate;
 use App\Repositories\DormRepo;
+use App\Models\Category;
 
 class DormController extends Controller
 {
@@ -22,17 +23,38 @@ class DormController extends Controller
 
     public function index()
     {
+        $categories = Category::all();
         $d['dorms'] = $this->dorm->getAll();
-        return view('pages.support_team.dorms.index', $d);
+        return view('pages.support_team.dorms.index', [
+            'dorms' => $d['dorms'],
+            'categories' => $categories
+        ]);
+    }
+
+    public function show($id)
+    {
+        $d['dorm'] = $this->dorm->find($id);
+
+        return view('pages.support_team.dorms.show', $d);
     }
 
     public function store(DormCreate $req)
     {
-        $data = $req->only(['name', 'description']);
+        $data = $req->only(['name', 'description', 'category', 'location']);
+
+        // Upload and store the image
+        if ($req->hasFile('image')) {
+            $image = $req->file('image');
+            $imageName = $image->getClientOriginalName(); // Use the original file name
+            $image->storeAs('public/images/Places', $imageName);
+            $data['image'] = $imageName;
+        }
+
         $this->dorm->create($data);
 
         return Qs::jsonStoreOk();
     }
+
 
     public function edit($id)
     {

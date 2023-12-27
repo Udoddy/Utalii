@@ -160,7 +160,7 @@ class Qs
         return Auth::user()->user_type == 'student';
     }
 
-    public static function userIsTeacher()
+    public static function userIsteacher()
     {
         return Auth::user()->user_type == 'teacher';
     }
@@ -283,7 +283,7 @@ class Qs
         return StudentRecord::where('my_parent_id', $parent_id)->with(['user', 'my_class'])->get();
     }
 
-    public static function findTeacherSubjects($teacher_id)
+    public static function findteacherSubjects($teacher_id)
     {
         return Subject::where('teacher_id', $teacher_id)->with('my_class')->get();
     }

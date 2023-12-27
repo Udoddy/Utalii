@@ -238,7 +238,7 @@
                 displayAjaxErr(errors);
             }
            if(e.status == 500){
-               displayAjaxErr([e.status + ' ' + e.statusText + ' Please Check for Duplicate entry or Contact School Administrator/IT Personnel'])
+               displayAjaxErr([e.status + ' ' + e.statusText + ' Please Check for Duplicate entry or Contact IT Personnel'])
            }
             if(e.status == 404){
                displayAjaxErr([e.status + ' ' + e.statusText + ' - Requested Resource or Record Not Found'])

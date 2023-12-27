@@ -4,14 +4,14 @@
 
     <div class="card">
         <div class="card-header header-elements-inline">
-            <h6 class="card-title">Edit Dorm</h6>
+            <h6 class="card-title">Edit Place</h6>
             {!! Qs::getPanelOptions() !!}
         </div>
 
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <form class="ajax-update" data-reload="#page-header" method="post" action="{{ route('dorms.update', $dorm->id) }}">
+                    <form class="ajax-update" data-reload="#page-header" method="post" action="{{ route('places.update', $dorm->id) }}">
                         @csrf @method('PUT')
                         <div class="form-group row">
                             <label class="col-lg-3 col-form-label font-weight-semibold">Name <span class="text-danger">*</span></label>

@@ -608,7 +608,6 @@ class ComposerStaticInit68fbf13a5167decaf22f39954df67803
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
         'App\\Http\\Controllers\\MyAccountController' => __DIR__ . '/../..' . '/app/Http/Controllers/MyAccountController.php',
-        'App\\Http\\Controllers\\MyParent\\MyController' => __DIR__ . '/../..' . '/app/Http/Controllers/MyParent/MyController.php',
         'App\\Http\\Controllers\\PlaceController' => __DIR__ . '/../..' . '/app/Http/Controllers/PlaceController.php',
         'App\\Http\\Controllers\\SuperAdmin\\SettingController' => __DIR__ . '/../..' . '/app/Http/Controllers/SuperAdmin/SettingController.php',
         'App\\Http\\Controllers\\SupportTeam\\DormController' => __DIR__ . '/../..' . '/app/Http/Controllers/SupportTeam/DormController.php',

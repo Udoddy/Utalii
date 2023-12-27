@@ -9,7 +9,16 @@ class DormRepo
 
     public function create($data)
     {
-        return Dorm::create($data);
+        $dorm = Dorm::create([
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'category_id' => $data['category'],
+            'location' => $data['location'],
+            'image' => $data['image'],
+        ]);
+
+        return $dorm;
+        // return Dorm::create($data);
     }
 
     public function getAll($order = 'name')

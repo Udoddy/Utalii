@@ -95,11 +95,11 @@
                                     </tr>
                                 @endif
 
-                                @if($user->user_type == 'teacher')
+                                @if($user->user_type == 'guest')
                                     <tr>
                                         <td class="font-weight-bold">My Subjects</td>
                                         <td>
-                                            @foreach(Qs::findTeacherSubjects($user->id) as $sub)
+                                            @foreach(Qs::findguestSubjects($user->id) as $sub)
                                                 <span> - {{ $sub->name.' ('.$sub->my_class->name.')' }}</span><br>
                                             @endforeach
                                         </td>

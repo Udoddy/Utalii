@@ -32,7 +32,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $d->name }}</td>
                                     <td>{{ $d->description}}</td>
-                                    <td>{{ $d->category}}</td>
+                                    <td>{{ $d->category->name}}</td>
                                     <td class="text-center">
                                         <div class="list-icons">
                                             <div class="dropdown">
@@ -43,12 +43,12 @@
                                                 <div class="dropdown-menu dropdown-menu-left">
                                                     @if(Qs::userIsTeamSA())
                                                     {{--Edit--}}
-                                                    <a href="{{ route('dorms.edit', $d->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
+                                                    <a href="{{ route('places.edit', $d->id) }}" class="dropdown-item"><i class="icon-pencil"></i> Edit</a>
                                                    @endif
                                                         @if(Qs::userIsSuperAdmin())
                                                     {{--Delete--}}
                                                     <a id="{{ $d->id }}" onclick="confirmDelete(this.id)" href="#" class="dropdown-item"><i class="icon-trash"></i> Delete</a>
-                                                    <form method="post" id="item-delete-{{ $d->id }}" action="{{ route('dorms.destroy', $d->id) }}" class="hidden">@csrf @method('delete')</form>
+                                                    <form method="post" id="item-delete-{{ $d->id }}" action="{{ route('places.destroy', $d->id) }}" class="hidden">@csrf @method('delete')</form>
                                                         @endif
 
                                                 </div>
@@ -65,7 +65,7 @@
 
                     <div class="row">
                         <div class="col-md-6">
-                            <form class="ajax-store" method="post" action="{{ route('dorms.store') }}">
+                            <form class="ajax-store" method="post" action="{{ route('places.store') }}">
                                 @csrf
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Name <span class="text-danger">*</span></label>
@@ -77,21 +77,44 @@
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Description</label>
                                     <div class="col-lg-9">
-                                        <input name="description" value="{{ old('description') }}"  type="text" class="form-control" placeholder="Description of the Place">
+                                        <textarea name="description" class="form-control" rows="3" placeholder="Description of the Place">{{ old('description') }}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-lg-3 col-form-label font-weight-semibold">Location</label>
+                                    <div class="col-lg-9">
+                                        <input name="location" value="{{ old('location') }}"  type="text" class="form-control" placeholder="Location of the Place">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Image</label>
                                     <div class="col-lg-9">
-                                        <input name="description" value="{{ old('image') }}"  type="text" class="form-control" placeholder="Upload Image">
-                                    </div>
-                                </div>
+                                        <div class="custom-file">
+                                          <input name="image" accept="image/*" type="file" class="custom-file-input" id="placeImage" data-show-caption="false" data-show-upload="false">
+                                          <label class="custom-file-label" for="placeImage">Choose file</label>
+                                        </div>
+                                        <script>
+                                          document.getElementById('placeImage').addEventListener('change', function(e) {
+                                            var fileName = e.target.files[0].name;
+                                            var label = document.querySelector('.custom-file-label');
+                                            label.textContent = fileName;
+                                          });
+                                        </script>
+                                      </div>
+                                  </div>
 
-                                <div class="form-group row">
+
+                                  <div class="form-group row">
                                     <label class="col-lg-3 col-form-label font-weight-semibold">Category</label>
                                     <div class="col-lg-9">
-                                        <input name="description" value="{{ old('category') }}"  type="text" class="form-control" placeholder="Pick Category">
+                                        <select name="category" class="form-control">
+                                            <option value="">Pick Category</option>
+                                            @foreach($categories as $c)
+                                                <option value="{{ $c->id }}">{{ $c->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
 
@@ -106,6 +129,6 @@
         </div>
     </div>
 
-    {{--Dorm List Ends--}}
+    {{--Places List Ends--}}
 
 @endsection

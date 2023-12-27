@@ -1,4 +1,5 @@
-<div class="sidebar sidebar-dark bg-success sidebar-main sidebar-expand-md">
+<div class="sidebar sidebar-dark bg-light-orange sidebar-main sidebar-expand-md">
+
 
     <!-- Sidebar mobile toggler -->
     <div class="sidebar-mobile-toggler text-center">
@@ -27,11 +28,7 @@
                     <div class="media-body">
                         <div class="media-title font-weight-semibold">{{ Auth::user()->name }}</div>
                         <div class="font-size-xs opacity-50">
-                            @if(Auth::user()->user_type == 'teacher')
-                                    <i class="icon-user font-size-sm"></i> &nbsp;Guest
-                                @else
-                                    <i class="icon-user font-size-sm"></i> &nbsp;{{ ucwords(str_replace('_', ' ', Auth::user()->user_type)) }}
-                                @endif
+                            <i class="icon-user font-size-sm"></i> &nbsp;{{ ucwords(str_replace('_', ' ', Auth::user()->user_type == 'teacher' ? 'guest' : Auth::user()->user_type)) }}
                         </div>
                     </div>
 
@@ -60,9 +57,21 @@
                 <li class="nav-item {{ Route::currentRouteName() == 'tt.index' ? 'active' : '' }}">
                     <a href="{{ route('tt.index') }}" class="nav-link"><i class="icon-calculator"></i> <span>Budgeting</span></a>
                 </li>
-                <li class="nav-item {{ Route::currentRouteName() == 'dorms.index' ? 'active' : '' }}">
-                    <a href="{{ route('dorms.index') }}" class="nav-link"><i class="icon-calculator"></i> <span>Places</span></a>
-                </li>
+
+                @if (auth()->user()->user_type == 'super_admin' || auth()->user()->user_type == 'admin')
+
+                @else
+                    <li class="nav-item {{ Route::currentRouteName() == 'places.index' ? 'active' : '' }}">
+                        <a href="{{ route('showplaces') }}" class="nav-link"><i class="icon-home"></i> <span>Places</span></a>
+                    </li>
+                    <li class="nav-item {{ Route::currentRouteName() == 'places.favorites' ? 'active' : '' }}">
+                        <a href="{{ route('favorites') }}" class="nav-link"><i class="icon-pin"></i> <span>Favourite</span></a>
+                    </li>
+                    <li class="nav-item {{ Route::currentRouteName() == 'places.add_review' ? 'active' : '' }}">
+                        <a href="{{route('comments.index') }}" class="nav-link"><i class="icon-comment"></i> <span>Comments</span></a>
+                    </li>
+                @endif
+
                 @endif
 
                 @if(Qs::userIsTeamSA())
@@ -73,13 +82,17 @@
 
                     {{--Manage Places--}}
                     <li class="nav-item">
-                        <a href="{{ route('dorms.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['dorms.index','dorms.edit']) ? 'active' : '' }}"><i class="icon-home9"></i> <span> Places</span></a>
+                        <a href="{{ route('places.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['places.index','places.edit']) ? 'active' : '' }}"><i class="icon-home9"></i> <span> Places</span></a>
                     </li>
 
-                    {{--Manage Sections--}}
-                    {{-- <li class="nav-item">
-                        <a href="{{ route('sections.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['sections.index','sections.edit',]) ? 'active' : '' }}"><i class="icon-fence"></i> <span>Sections</span></a>
-                    </li> --}}
+                    {{--Manage Comments--}}
+                    <li class="nav-item {{ Route::currentRouteName() == 'places.add_review' ? 'active' : '' }}">
+                        <a href="{{route('comments.index') }}" class="nav-link"><i class="icon-comment"></i> <span>Comments</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ route('sections.index') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['sections.index','sections.edit',]) ? 'active' : '' }}"><i class="icon-calendar"></i> <span>Calender Events</span></a>
+                    </li>
 
 
                 @endif
@@ -90,6 +103,15 @@
                 <li class="nav-item">
                     <a href="{{ route('my_account') }}" class="nav-link {{ in_array(Route::currentRouteName(), ['my_account']) ? 'active' : '' }}"><i class="icon-user"></i> <span>My Account</span></a>
                 </li>
+
+                {{--Log Out--}}
+                <li class="nav-item {{ Route::currentRouteName() == 'logout' ? 'active' : '' }}">
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link"><i class="icon-switch2"></i><span> Logout</span></a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
+
 
                 </ul>
             </div>

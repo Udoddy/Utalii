@@ -119,7 +119,7 @@
                                     </div>
 
                                     <div class="text-right">
-                                        <button type="submit" class="btn btn-danger">Submit form <i class="icon-paperplane ml-2"></i></button>
+                                        <button type="submit" class="btn btn-grey">Update Details <i class="icon-paperplane ml-2"></i></button>
                                     </div>
                                 </form>
                             </div>

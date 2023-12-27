@@ -17,6 +17,9 @@ class DormCreate extends FormRequest
     {
         return [
             'name' => 'required|string|unique:dorms',
+            'description' => 'required',
+            'image' => 'required|image',
+            'category' => 'required',
         ];
     }
 

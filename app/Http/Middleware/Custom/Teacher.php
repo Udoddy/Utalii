@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Qs;
 
-class Teacher
+class teacher
 {
     /**
      * Handle an incoming request.
@@ -17,6 +17,6 @@ class Teacher
      */
     public function handle($request, Closure $next)
     {
-        return (Auth::check() && Qs::userIsTeacher()) ? $next($request) : redirect()->route('login');
+        return (Auth::check() && Qs::userIsteacher()) ? $next($request) : redirect()->route('login');
     }
 }

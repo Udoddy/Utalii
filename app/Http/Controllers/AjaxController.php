@@ -41,8 +41,8 @@ class AjaxController extends Controller
         $sections = $this->my_class->getClassSections($class_id);
         $subjects = $this->my_class->findSubjectByClass($class_id);
 
-        if(Qs::userIsTeacher()){
-            $subjects = $this->my_class->findSubjectByTeacher(Auth::user()->id)->where('my_class_id', $class_id);
+        if(Qs::userIsteacher()){
+            $subjects = $this->my_class->findSubjectByteacher(Auth::user()->id)->where('my_class_id', $class_id);
         }
 
         $d['sections'] = $sections->map(function($q){

@@ -1,4 +1,6 @@
 <?php
+use illumiate\Http\Request;
+use GuzzleHttp\Client;
 
 Auth::routes();
 
@@ -15,6 +17,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/places', function () {
         return view('places');
     })->name('places');
+    Route::get('/maps', function () {
+        return view('maps');
+    })->name('maps');
 });
 
 
@@ -23,7 +28,10 @@ Route::group(['middleware' => 'auth', 'prefix' => 'panel'], function () {
     Route::get('/', 'HomeController@dashboard')->name('home');
     Route::get('/home', 'HomeController@dashboard')->name('home');
     Route::get('/dashboard', 'HomeController@dashboard')->name('dashboard');
+    Route::get('/events', function () {return view('dashboard.events');});
+
     Route::get('/budgeting', 'HomeController@dashboard')->name('budgeting');
+    // Route::get('/dorms.show', 'HomeController@dashboard')->name('places');
 
     Route::group(['prefix' => 'my_account'], function() {
         Route::get('/', 'MyAccountController@edit_profile')->name('my_account');
@@ -34,23 +42,29 @@ Route::group(['middleware' => 'auth', 'prefix' => 'panel'], function () {
     /*************** Support Team *****************/
     Route::group(['namespace' => 'SupportTeam',], function(){
 
-        /*************** Students *****************/
-        Route::group(['prefix' => 'students'], function(){
-            Route::get('reset_pass/{st_id}', 'StudentRecordController@reset_pass')->name('st.reset_pass');
-            Route::get('graduated', 'StudentRecordController@graduated')->name('students.graduated');
-            Route::put('not_graduated/{id}', 'StudentRecordController@not_graduated')->name('st.not_graduated');
-            Route::get('list/{class_id}', 'StudentRecordController@listByClass')->name('students.list');
-
-        });
-
         /*************** Users *****************/
         Route::group(['prefix' => 'users'], function(){
             Route::get('reset_pass/{id}', 'UserController@reset_pass')->name('users.reset_pass');
         });
 
-        /*************** TimeTables *****************/
-        Route::group(['prefix' => 'timetables'], function(){
+
+
+        /*************** Budgeting *****************/
+        Route::group(['prefix' => 'budgeting'], function(){
             Route::get('/', 'TimeTableController@index')->name('tt.index');
+            Route::post('/predict', 'TimeTableController@predict')->name('predict');
+
+            Route::get('/showplaces', ShowPlaces::class)->name('showplaces');
+
+            /*************** Comments *****************/
+            Route::resource('comments', CommentsController::class);
+
+            Route::group(['prefix' => 'favorites'], function () {
+                Route::middleware('auth')->get('/', 'FavoriteController@favorites')->name('favorites');
+                Route::middleware('auth')->post('/add', 'FavoriteController@addToFavorites')->name('favorites.add');
+            });
+
+
 
             Route::group(['middleware' => 'teamSA'], function() {
                 Route::post('/', 'TimeTableController@store')->name('tt.store');
@@ -58,7 +72,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'panel'], function () {
                 Route::delete('/{tt}', 'TimeTableController@delete')->name('tt.delete');
             });
 
-            /*************** TimeTable Records *****************/
+            /*************** Predictions Records *****************/
             Route::group(['prefix' => 'records'], function(){
 
                 Route::group(['middleware' => 'teamSA'], function(){
@@ -81,6 +95,44 @@ Route::group(['middleware' => 'auth', 'prefix' => 'panel'], function () {
                 Route::get('edit/{ts}', 'TimeTableController@edit_time_slot')->name('ts.edit');
                 Route::delete('/{ts}', 'TimeTableController@delete_time_slot')->name('ts.destroy');
                 Route::put('/{ts}', 'TimeTableController@update_time_slot')->name('ts.update');
+            });
+
+            /*************** Budget API *****************/
+            // Route::get('/Api-Post-Data/',function(){
+            //     $client = new Client();
+            //     $api_url="http://127.0.0.1:5000/api";
+            //     $res=$client->post($api_url,[
+            //         'form_params'=>[
+            //             'country' => 'SWITZERLAND',
+            //             'age' => '1-24',
+            //             'travelWith' => 'Friends/Relatives',
+            //             'purpose' => 'Leisure and Holidays',
+            //             'numberofpeople' => 2,
+            //             'activity' => 'Wildlife tourism',
+            //             'tourArrangement' => 'Independent',
+            //             'int_transport' => 'No',
+            //             'accommodation' => 'Yes',
+            //             'food' => 'Yes',
+            //             'local_transport' => 'Yes',
+            //             'sightseeing' =>  'No',
+            //             'tour_guide' => 'Yes',
+            //             'insurance' => 'Yes',
+            //             'first_trip' => 'Yes',
+            //             'paymentmode' => 'Cash',
+            //             'Tzmainland' => 7,
+            //             'Zanzibar' => 5]
+            //         ]);
+            //     $data_body= $res->getBody();
+            //     echo $data_body;
+            // });
+
+            Route::get('/Api-Get-Data/',function(){
+                $client = new Client();
+                $data = $client -> get('http://127.0.0.1:5000/Getdata');
+                $data_body= $data->getBody();
+
+                $api=$data_body;
+                return $api;
             });
 
         });
@@ -134,7 +186,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'panel'], function () {
         Route::resource('subjects', 'SubjectController');
         Route::resource('grades', 'GradeController');
         Route::resource('exams', 'ExamController');
-        Route::resource('dorms', 'DormController');
+        Route::resource('places', 'DormController');
         Route::resource('payments', 'PaymentController');
 
     });
@@ -153,12 +205,5 @@ Route::group(['namespace' => 'SuperAdmin','middleware' => 'super_admin', 'prefix
 
     Route::get('/settings', 'SettingController@index')->name('settings');
     Route::put('/settings', 'SettingController@update')->name('settings.update');
-
-});
-
-/************************ PARENT ****************************/
-Route::group(['namespace' => 'MyParent','middleware' => 'my_parent',], function(){
-
-    Route::get('/my_children', 'MyController@children')->name('my_children');
 
 });

@@ -12,6 +12,7 @@ use App\Repositories\MyClassRepo;
 use App\Repositories\TimeTableRepo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class TimeTableController extends Controller
 {
@@ -32,6 +33,7 @@ class TimeTableController extends Controller
         $d['tt_records'] = $this->tt->getAllRecords();
 
         return view('pages.support_team.timetables.index', $d);
+        //return view('pages.support_team.timetables.index', compact('prediction'));
     }
 
     public function manage($ttr_id)
@@ -253,4 +255,64 @@ class TimeTableController extends Controller
         $this->tt->deleteRecord($ttr_id);
         return back()->with('flash_success', __('msg.delete_ok'));
     }
+
+//     public function predict(Request $request)
+//     {
+
+
+//         $data = $request->all();
+
+//       // Make a POST request to Flask API
+//       $response = Http::post('http://127.0.0.1:5000/predict', $data);
+
+//       if ($response->successful()) {
+//           $responseData = $response->json();
+//           $message = $responseData['message'];
+//           echo $message;
+//       } else {
+//           $statusCode = $response->status();
+//           $errorResponse = $response->body();
+//           echo "API request failed with status code: $statusCode\n";
+//           echo "Error response: $errorResponse\n";
+//       }
+// }
+        public function predict(Request $request)
+        {
+            $data = $request->all();
+
+            // Make a POST request to Flask API
+            $response = Http::post('http://127.0.0.1:5000/predict', $data);
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+                $message = $responseData['message'];
+                return response()->json(['message' => $message]);
+            } else {
+                $statusCode = $response->status();
+                $errorResponse = $response->body();
+                return response()->json(['error' => "API request failed with status code: $statusCode", 'response' => $errorResponse]);
+            }
+        }
+
+    public function storeComment(Request $request)
+        {
+            $validatedData = $request->validate([
+                'name' => 'required',
+                'comment' => 'required',
+            ]);
+
+            //Comment::create($validatedData);
+
+            // Create a new Comment instance
+            $comment = new Comment;
+            $comment->name = $request->input('name');
+            $comment->comment = $request->input('comment');
+
+            // Save the comment
+            $comment->save();
+
+            return redirect()->back()->with('success', 'Comment posted successfully.');
+        }
+
+
 }

@@ -22,12 +22,12 @@
 
                       {{--
                       <div class="form-group row">
-                            <label for="teacher_id" class="col-lg-3 col-form-label font-weight-semibold">Teacher</label>
+                            <label for="guest_id" class="col-lg-3 col-form-label font-weight-semibold">guest</label>
                             <div class="col-lg-9">
-                                <select data-placeholder="Select Teacher" class="form-control select-search" name="teacher_id" id="teacher_id">
+                                <select data-placeholder="Select guest" class="form-control select-search" name="guest_id" id="guest_id">
                                     <option value=""></option>
-                                    @foreach($teachers as $t)
-                                        <option {{ $c->teacher_id == $t->id ? 'selected' : '' }} value="{{ Qs::hash($t->id) }}">{{ $t->name }}</option>
+                                    @foreach($guests as $t)
+                                        <option {{ $c->guest_id == $t->id ? 'selected' : '' }} value="{{ Qs::hash($t->id) }}">{{ $t->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
